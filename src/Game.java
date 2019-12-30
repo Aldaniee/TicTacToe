@@ -15,7 +15,12 @@ public class Game {
 		b = new Board();
 		System.out.println("Welcome to Tic-Tac-Toe! You will be 'X' and the computer will be 'O'.");
 		System.out.println("Type the index of your move (row-major order):");
-		System.out.println(" _   _   _\n 1   2   3\n _   _   _\n 4   5   6\n _   _   _\n 7   8   9\n");
+		System.out.println(" _   _   _\n"
+					     + " 1   2   3\n"
+					     + " _   _   _\n"
+					     + " 4   5   6\n"
+					     + " _   _   _\n"
+					     + " 7   8   9\n");
 		do {
 			if(b.put(Board.X, s.nextInt() - 1)) { // returns true if the placement is valid
 				if(!b.isFull())
