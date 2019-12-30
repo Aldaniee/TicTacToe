@@ -8,7 +8,8 @@ import java.util.Scanner;
 public class Game {
 	private static Scanner s; // allows for user input
 	private static Board b; // stores the current state of the game
-	/** Runs the Tic-Tac-Toe game */
+	
+	/** Runs the interactive Tic-Tac-Toe game */
 	public static void main(String[] args) {
 		s = new Scanner(System.in);
 		b = new Board();
@@ -16,31 +17,34 @@ public class Game {
 		System.out.println("Type the index of your move (row-major order):");
 		System.out.println(" _   _   _\n 1   2   3\n _   _   _\n 4   5   6\n _   _   _\n 7   8   9\n");
 		do {
-			if(b.put('X', s.nextInt())) { // returns true if the placement is valid
-				if(!b.isTie())
+			if(b.put(Board.X, s.nextInt() - 1)) { // returns true if the placement is valid
+				if(!b.isFull())
 					b.set(miniMaxDecision(b).getBoard());
 			}
 			else
-				System.out.println("That spot is taken! Try again.");
+				System.out.println("Invalid input. Try again.");
 			System.out.println(b);
-		} while(!(b.hasWon('X') || b.hasWon('O') || b.isTie()));
-		if(b.hasWon('X'))
+		} while(b.terminalTest() == false);
+		
+		int result = b.utility();
+		if(result == Board.X_WINNER)
 			System.out.println("X won!");
-		else if (b.hasWon('O'))
+		else if (result == Board.O_WINNER)
 			System.out.println("O won!");
 		else
 			System.out.println("Tie game.");
 		s.close();
 	}
+	
 	/**
-	 * Returns the board state given with an O added in the optimal location
+	 * Returns the next board state after the algorithm's optimal move
 	 * @param bb a board with one more X then O on the board
-	 * @return bb with an O added to the optimal location
+	 * @return with an O added to the optimal location
 	 */
 	private static Board miniMaxDecision(Board bb) {
-		ArrayList<Board> boards = makeMoveArray('O', bb);
-		int best = Board.LOWEST; // starts at worst case scenario
-		Board bestBoard = null; // this will store the board state with an optimal move
+		ArrayList<Board> boards = makeMoveArray(Board.O, bb);
+		int best = Board.X_WINNER; // starts at worst case scenario for algorithm
+		Board bestBoard = null; // this will store running best board state after an the optimal move
 		for(int n = 0; n < boards.size(); n++) {
 			if(boards.get(n).terminalTest()) {
 				int utility = boards.get(n).utility();
@@ -59,14 +63,15 @@ public class Game {
 		}
 		return bestBoard;
 	}
+	
 	/**
-	 * Returns the max outcome for the current position
+	 * Returns the max outcome for the current position - used for algorithm moves
 	 * @param bb a board with one more X then O
 	 * @return the value of the optimal outcome from this position
 	 */
 	private static int max(Board bb) {
-		ArrayList<Board> boards = makeMoveArray('O', bb);
-		int best = Board.LOWEST; // starts at worst case scenario
+		ArrayList<Board> boards = makeMoveArray(Board.O, bb);
+		int best = Board.X_WINNER; // starts at worst case scenario for algorithm
 		for(Board bn: boards) {
 			if(bn.terminalTest()) {
 				int utility = bn.utility();
@@ -81,14 +86,15 @@ public class Game {
 		}		
 		return best;
 	}
+	
 	/**
-	 * Returns the min outcome for the current position
+	 * Returns the min outcome for the current position - used for human moves
 	 * @param bb a board with the same amount of Xs and Os
 	 * @return the value of the optimal outcome from this position
 	 */
 	private static int min(Board bb) {
-		ArrayList<Board> boards = makeMoveArray('X', bb);
-		int best = Board.HIGHEST; // starts at worst case scenario
+		ArrayList<Board> boards = makeMoveArray(Board.X, bb);
+		int best = Board.O_WINNER; // starts at worst case scenario for human
 		for(Board bn: boards) {
 			if(bn.terminalTest()) {
 				int utility = bn.utility();
@@ -105,16 +111,16 @@ public class Game {
 	}
 	/**
 	 * Makes an array of all possible states of the board after the char xo is placed
-	 * @param xo either X or O to be palced on the board
+	 * @param xo either X or O to be placed on the board
 	 * @param bb the board to be moved on
 	 * @return an array of all possible next states after xo's move
 	 */
-	private static ArrayList<Board> makeMoveArray(char xo, Board bb) {
+	private static ArrayList<Board> makeMoveArray(int xo, Board bb) {
 		ArrayList<Board> boards = new ArrayList<Board>();
 		for(int i = 0; i < bb.getBoard().length; i++) {
 			if(bb.getBoard()[i] == Board.EMPTY) {
 				Board temp = (Board) deepClone(bb);
-				temp.put(xo, i+1);
+				temp.put(xo, i);
 				boards.add(temp);
 			}
 		}
