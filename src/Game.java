@@ -4,43 +4,43 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
-public class Game {
+public class Game extends JFrame implements WindowListener,ActionListener {
 	private static Scanner s; // allows for user input
 	private static Board b; // stores the current state of the game
-	
+	private JButton buttons[] = new JButton[9];
 	/** Runs the interactive Tic-Tac-Toe game */
 	public static void main(String[] args) {
+		Game game = new Game("Tic-Tac-Toe");
+		game.setPreferredSize(new Dimension(600, 600));
+		game.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		//Display the window.
+		game.pack();
+		game.setVisible(true);
+	}
+	public Game(String title) {
 		s = new Scanner(System.in);
 		b = new Board();
-		System.out.println("Welcome to Tic-Tac-Toe! You will be 'X' and the computer will be 'O'.");
-		System.out.println("Type the index of your move (row-major order):");
-		System.out.println(" _   _   _\n"
-					     + " 1   2   3\n"
-					     + " _   _   _\n"
-					     + " 4   5   6\n"
-					     + " _   _   _\n"
-					     + " 7   8   9\n");
-		do {
-			if(b.put(Board.X, s.nextInt() - 1)) { // returns true if the placement is valid
-				if(!b.isFull())
-					b.set(miniMaxDecision(b).getBoard());
-			}
-			else
-				System.out.println("Invalid input. Try again.");
-			System.out.println(b);
-		} while(b.terminalTest() == false);
-		
-		int result = b.utility();
-		if(result == Board.X_WINNER)
-			System.out.println("X won!");
-		else if (result == Board.O_WINNER)
-			System.out.println("O won!");
-		else
-			System.out.println("Tie game.");
-		s.close();
+		//Set up the content pane.
+		setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		c.gridwidth = 1;   //1 column wide
+		c.weightx = 0.5;
+		c.weighty = 0.5;
+		for(int i = 0; i < 9; i++) {
+			buttons[i] = new JButton("" + (i + 1));
+			buttons[i].addActionListener(this);
+			c.gridx = i % 3;
+			c.gridy = i / 3;
+			add(buttons[i], c);
+		}
 	}
-	
+
 	/**
 	 * Returns the next board state after the algorithm's optimal move
 	 * @param bb a board with one more X then O on the board
@@ -68,7 +68,7 @@ public class Game {
 		}
 		return bestBoard;
 	}
-	
+
 	/**
 	 * Returns the max outcome for the current position - used for algorithm moves
 	 * @param bb a board with one more X then O
@@ -91,7 +91,7 @@ public class Game {
 		}		
 		return best;
 	}
-	
+
 	/**
 	 * Returns the min outcome for the current position - used for human moves
 	 * @param bb a board with the same amount of Xs and Os
@@ -131,7 +131,7 @@ public class Game {
 		}
 		return boards;
 	}
-	
+
 	/**
 	 * This method makes a "deep clone" of any Java object it is given.
 	 * @author Alvin Alexander, http://alvinalexander.com
@@ -150,4 +150,30 @@ public class Game {
 			return null;
 		}
 	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() ==)
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {}
+
+	@Override
+	public void windowClosing(WindowEvent e) {}
+
+	@Override
+	public void windowClosed(WindowEvent e) {}
+
+	@Override
+	public void windowIconified(WindowEvent e) {}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {}
+
+	@Override
+	public void windowActivated(WindowEvent e) {}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {}
 }
