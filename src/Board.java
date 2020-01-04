@@ -25,27 +25,7 @@ public class Board implements Serializable {
 	public int[] getBoard() {
 		return board;
 	}
-	
-	/**
-	 * @return a formated string representation of the current board state
-	 */
-	public String toString() {
-		String displayString = "";
-		for(int i = 0; i < board.length; i++) {
-			if(i % 3 == 0)
-				displayString += "\n";
-			displayString += " ";
-			if(board[i] == EMPTY)
-				displayString += "_";
-			else if(board[i] == X)
-				displayString += "X";
-			else if(board[i] == O)
-				displayString += "O";
-			else
-				displayString += "ERROR";
-		}
-		return displayString;
-	}
+
 	/**
 	 * puts an 'X' or 'O' onto the game board
 	 * @param xo - either 1 or 2 (corresponding with 'X' or 'O')
@@ -113,5 +93,18 @@ public class Board implements Serializable {
 	 */
 	public void set(int[] board) {
 		this.board = board;
+	}
+	/**
+	 * Get the display letter of a given index
+	 * @param i index to return
+	 * @ return "X", "O", or " "
+	 */
+	public String get(int i) {
+		if(board[i] == EMPTY)
+			return " ";
+		else if(board[i] == X)
+			return "X";
+		else
+			return "O";
 	}
 }

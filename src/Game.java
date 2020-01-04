@@ -3,13 +3,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
 public class Game extends JFrame implements WindowListener,ActionListener {
-	private static Scanner s; // allows for user input
+
+	private static final long serialVersionUID = 1L;
 	private static Board b; // stores the current state of the game
 	private JButton buttons[] = new JButton[9];
 	/** Runs the interactive Tic-Tac-Toe game */
@@ -17,14 +17,14 @@ public class Game extends JFrame implements WindowListener,ActionListener {
 		Game game = new Game("Tic-Tac-Toe");
 		game.setPreferredSize(new Dimension(600, 600));
 		game.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		//Display the window.
 		game.pack();
 		game.setVisible(true);
 	}
 	public Game(String title) {
-		s = new Scanner(System.in);
 		b = new Board();
+		
 		//Set up the content pane.
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -33,8 +33,9 @@ public class Game extends JFrame implements WindowListener,ActionListener {
 		c.weightx = 0.5;
 		c.weighty = 0.5;
 		for(int i = 0; i < 9; i++) {
-			buttons[i] = new JButton("" + (i + 1));
+			buttons[i] = new JButton(b.get(i));
 			buttons[i].addActionListener(this);
+		    buttons[i].setActionCommand(i + new String());
 			c.gridx = i % 3;
 			c.gridy = i / 3;
 			add(buttons[i], c);
@@ -150,10 +151,41 @@ public class Game extends JFrame implements WindowListener,ActionListener {
 			return null;
 		}
 	}
-
+	/**
+	 * updates the button text to reflect the current board state
+	 */
+	public void updateButtons() {
+		for(int i = 0; i < 9; i++)
+			buttons[i].setText(b.get(i));
+	}
+	/**
+	 * Communicates a message on the board
+	 * @param message to send
+	 */
+	public void boardMessage(String message) {
+		for(int i = 0; i < 9; i++)
+			buttons[i].setText("");
+		buttons[4].setText(message);
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() ==)
+		int i = Integer.parseInt(e.getActionCommand());
+		b.put(Board.X, i); // returns true if the placement is valid
+		updateButtons();
+		if(!b.isFull()) {
+			b.set(miniMaxDecision(b).getBoard());
+			updateButtons();
+		}
+		if(b.terminalTest()) {
+			int result = b.utility();
+			b = new Board();
+			if(result == Board.X_WINNER)
+				boardMessage("X won! Well, this shouldn't be possible...");
+			else if (result == Board.O_WINNER)
+				boardMessage("You lose! Don't feel bad, you can't win.");
+			else
+				boardMessage("Tie game. It's really the best you can do.");
+		}
 	}
 
 	@Override
