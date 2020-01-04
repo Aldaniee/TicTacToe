@@ -170,21 +170,23 @@ public class Game extends JFrame implements WindowListener,ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		int i = Integer.parseInt(e.getActionCommand());
-		b.put(Board.X, i); // returns true if the placement is valid
-		updateButtons();
-		if(!b.isFull()) {
-			b.set(miniMaxDecision(b).getBoard());
+		if(b.get(i) == " ") {
+			b.put(Board.X, i); // returns true if the placement is valid
 			updateButtons();
-		}
-		if(b.terminalTest()) {
-			int result = b.utility();
-			b = new Board();
-			if(result == Board.X_WINNER)
-				boardMessage("X won! Well, this shouldn't be possible...");
-			else if (result == Board.O_WINNER)
-				boardMessage("You lose! Don't feel bad, you can't win.");
-			else
-				boardMessage("Tie game. It's the best you can do.");
+			if(!b.isFull()) {
+				b.set(miniMaxDecision(b).getBoard());
+				updateButtons();
+			}
+			if(b.terminalTest()) {
+				int result = b.utility();
+				b = new Board();
+				if(result == Board.X_WINNER)
+					boardMessage("X won! Well, this shouldn't be possible...");
+				else if (result == Board.O_WINNER)
+					boardMessage("You lose! Don't feel bad, you can't win.");
+				else
+					boardMessage("Tie game. It's the best you can do.");
+			}
 		}
 	}
 
