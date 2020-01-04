@@ -184,7 +184,7 @@ public class Game extends JFrame implements WindowListener,ActionListener {
 			else if (result == Board.O_WINNER)
 				boardMessage("You lose! Don't feel bad, you can't win.");
 			else
-				boardMessage("Tie game. It's really the best you can do.");
+				boardMessage("Tie game. It's the best you can do.");
 		}
 	}
 
